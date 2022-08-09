@@ -1,9 +1,8 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from django.shortcuts import get_object_or_404
 from posts.models import Post, Group, Comment, User
 from .serializers import PostSerializer, GroupSerializer, CommentSerializer
 from .serializers import FollowSerializer
-from django.core.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.pagination import LimitOffsetPagination
@@ -44,27 +43,19 @@ class CommentViewSet(viewsets.ModelViewSet):
         post = get_object_or_404(Post, id=id)
         return post.comments
 
-    def perform_update(self, serializer):
-        if serializer.instance.author != self.request.user:
-            raise PermissionDenied()
-        serializer.save(author=self.request.user)
 
-    def perform_destroy(self, serializer):
-        if serializer.author != self.request.user:
-            raise PermissionDenied()
-        serializer.delete()
-
-
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
     search_fields = ('following__username',)
 
     def get_queryset(self):
-        username = self.request.user
-        user = get_object_or_404(User, username=username)
-        return user.follower
+        return self.request.user.follower.all()
 
     def perform_create(self, serializer):
         following_user = get_object_or_404(
