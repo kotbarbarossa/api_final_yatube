@@ -94,7 +94,7 @@ http://127.0.0.1:8000/api/v1/
 [//]: # (links)
 
    [Максим Митягин]: <https://github.com/mityagin>
-   [девушка]: <vk.com/julia_super_fox>
+   [девушка]: <https://vk.com/julia_super_fox>
    [Release Date: June 27, 2018]: https://www.python.org/downloads/release/python-370/
    [Release notes]: https://docs.djangoproject.com/en/4.0/releases/2.2.16/
    [3.12.4 Date: 26th March 2021]: https://www.django-rest-framework.org/community/release-notes/#312x-series
